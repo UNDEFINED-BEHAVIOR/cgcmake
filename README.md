@@ -1,10 +1,26 @@
 Originally forked from https://github.com/chadmv/cgcmake
 
+New features:
+
+* ADD_MAYA_PLUGIN()
+    * Declare, format and link target as maya plugin in one command
+    * Drop-in replacement for add_library()
+* MAYA_VERSION no longer defaults to any specific version
+    * Invalid maya version will be marked as "NOT_SET"
+
 # cgcmake
 CMake modules for common applications related to computer graphics.
 
 ## Example
 -------------------
+```
+Hierarchy:
+Top
+- example-hello-world-cmd
+- plugin-main
+Target dependency:
+example-hello-world-cmd <- plugin-main
+```
 
 Top level CMakeLists.txt
 -------------------
