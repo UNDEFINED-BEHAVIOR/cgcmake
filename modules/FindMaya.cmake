@@ -159,6 +159,34 @@ function(MAYA_PLUGIN _target)
         SUFFIX ${MAYA_PLUGIN_EXTENSION})
 endfunction()
 
+# Declare intermediate maya library targets
+# Drop-in replacement for add_library
+function(ADD_MAYA_LIBRARY _TARGET)
+    cmake_parse_arguments(
+        _PARSED
+        "EXCLUDE_FROM_ALL"
+        ""
+        ""
+        ${ARGN}
+    )
+    set(_SOURCES ${_PARSED_UNPARSED_ARGUMENTS})
+    # message(INFO _PARSED_EXCLUDE_FROM_ALL)
+    # message(INFO ${_SOURCES})
+
+    if(_PARSED_EXCLUDE_FROM_ALL)
+        # message(INFO "exclude form all")
+        add_library(${_TARGET} SHARED EXCLUDE_FROM_ALL ${_SOURCES})
+    else()
+        # message(INFO "NOT exclude form all")
+        add_library(${_TARGET} SHARED ${_SOURCES})
+    endif()
+
+    target_link_libraries(
+        ${_TARGET} PRIVATE Maya::Maya
+    )
+    MAYA_PLUGIN(${_TARGET})
+endfunction()
+
 # Declare, format and link target as maya plugin in one command
 # Drop-in replacement for add_library
 function(ADD_MAYA_PLUGIN _TARGET)
