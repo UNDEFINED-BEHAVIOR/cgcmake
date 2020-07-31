@@ -1,10 +1,10 @@
 New features:
 
-* ADD_MAYA_PLUGIN()
+* ADD_MAYA_PLUGIN function
     * Declare, format and link target as maya plugin in one command
-    * Drop-in replacement for add_library()
+    * Drop-in replacement for add_library command
 * MAYA_VERSION no longer defaults to any specific version
-    * Unspecified maya version will be marked as "NOT_SET"
+    * Unspecified maya version will be marked as "NOT_SET", and treated as error
 
 # cgcmake
 CMake modules for common applications related to computer graphics.
@@ -13,11 +13,13 @@ CMake modules for common applications related to computer graphics.
 -------------------
 ```
 Hierarchy:
-Top
-- example-hello-world-cmd
-- plugin-main
-Target dependency:
-example-hello-world-cmd <- plugin-main
+    MayaPlugin-Top
+    - HelloWorldCmd
+    - PluginMain
+    - SimpleHelloWorldCmd-Main
+Target linkage:
+    HelloWorldCmd <- PluginMain
+    SimpleHelloWorldCmd-Main
 ```
 
 Top level CMakeLists.txt
@@ -32,10 +34,11 @@ Top level CMakeLists.txt
     ## import Maya package
     find_package(Maya REQUIRED)
 
-    add_subdirectory(example-hello-world-cmd)
-    add_subdirectory(plugin-main)
+    add_subdirectory(HelloWorldCmd)
+    add_subdirectory(PluginMain)
+    add_subdirectory(SimpleHelloWorldCmd-Main)
 
-example-hello-world-cmd CMakeLists.txt
+HelloWorldCmd CMakeLists.txt
 -------------------
 
 
@@ -65,12 +68,12 @@ example-hello-world-cmd CMakeLists.txt
         Maya::Maya
     )
 
-plugin-main CMakeLists.txt
+PluginMain CMakeLists.txt
 -------------------
 
-    ## Maya plugin entry
+    ## Maya plugin entry, using HelloWorldCmd target
 
-    project(SamplePlugins)
+    project(SamplePlugin)
 
     # Maya plugin specific drop-in replacement for add_library command
     ADD_MAYA_PLUGIN(${PROJECT_NAME})
@@ -89,6 +92,31 @@ plugin-main CMakeLists.txt
 
     # Uncomment this to enable installing to CMAKE_INSTALL_PREFIX.
     # install(TARGETS ${PROJECT_NAME} ${MAYA_TARGET_TYPE} DESTINATION .)
+
+
+SimpleHelloWorldCmd-Main CMakeLists.txt
+-------------------
+
+    ## Hello world plugin defined in a single target
+    ## ADD_MAYA_PLUGIN can accept ADD_LIBRARY arguments
+    ## *Library type is fixed to SHARED
+
+    PROJECT(SimpleHelloWorldCmd-Main)
+
+    ADD_MAYA_PLUGIN(
+        ${PROJECT_NAME}
+        # EXCLUDE_FROM_ALL
+        include/HelloworldCmd.h
+        src/main.cpp
+    )
+
+    TARGET_INCLUDE_DIRECTORIES(
+        ${PROJECT_NAME}
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
+    INSTALL(TARGETS ${PROJECT_NAME} DESTINATION .)
 
 From Command Line
 -----------------
