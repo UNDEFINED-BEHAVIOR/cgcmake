@@ -42,13 +42,15 @@
 #   All the Maya libraries.
 #
 
-# Raise an error if Maya version if not specified
+# Raise an error, halt if Maya version if not specified
 # Default value will be "NOT_SET"
-SET(MAYA_VERSION "NOT_SET" CACHE STRING "Target Maya version")
+if(NOT DEFINED MAYA_VERSION)
+    set(MAYA_VERSION "NOT_SET" CACHE STRING "Target Maya version")
+endif()
 
-IF(MAYA_VERSION STREQUAL "NOT_SET")
-    MESSAGE(FATAL_ERROR "MAYA_VERSION is not specified")
-ENDIF()
+if(MAYA_VERSION STREQUAL "NOT_SET")
+    message(FATAL_ERROR "FindMaya: MAYA_VERSION is not specified")
+endif()
 
 # OS Specific environment setup
 set(MAYA_COMPILE_DEFINITIONS "REQUIRE_IOSTREAM;_BOOL")
@@ -157,7 +159,8 @@ function(MAYA_PLUGIN _target)
         SUFFIX ${MAYA_PLUGIN_EXTENSION})
 endfunction()
 
-# Maya plugin specific drop-in replacement for add_library command
+# Declare, format and link target as maya plugin in one command
+# Drop-in replacement for add_library
 function(ADD_MAYA_PLUGIN _target)
     add_library(${_target} SHARED)
     target_link_libraries(
