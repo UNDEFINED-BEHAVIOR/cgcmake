@@ -116,7 +116,7 @@ SimpleHelloWorldCmd-Main CMakeLists.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
-    INSTALL(TARGETS ${PROJECT_NAME} DESTINATION .)
+    INSTALL(TARGETS ${PROJECT_NAME} ${MAYA_TARGET_TYPE} DESTINATION .)
 
 From Command Line
 -----------------
