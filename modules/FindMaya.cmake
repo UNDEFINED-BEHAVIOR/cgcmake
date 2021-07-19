@@ -47,6 +47,8 @@ include(CMakeParseArguments)
 # Raise an error, halt if Maya version if not specified
 # Default value will be "NOT_SET"
 set(MAYA_VERSION "NOT_SET" CACHE STRING "Target Maya version")
+set(MAYA_USE_MAYAPY OFF CACHE BOOL "Use mayapy/mayapy2 as PYTHON_EXECUTABLE")
+set(MAYA_USE_LEGACY_PYTHON OFF CACHE BOOL "Prefer mayapy2 in Maya 2022")
 
 if(MAYA_VERSION STREQUAL "NOT_SET")
     message(FATAL_ERROR "FindMaya: MAYA_VERSION is not specified")

@@ -1,10 +1,14 @@
 New features:
 
 * ADD_MAYA_PLUGIN function
-    * Declare, format and link target as maya plugin in one command
+    * Declare, format and link target as Maya plugin in one command
     * Drop-in replacement for add_library command
 * MAYA_VERSION no longer defaults to any specific version
-    * Unspecified maya version will be marked as "NOT_SET", and treated as error
+    * Unspecified Maya version will be marked as "NOT_SET", and treated as error
+* Specifying Maya python intepreter as target python interpreter (Windows only)
+    * Setting mayapy as PYTHON_EXECUTABLE by delcaring MAYA_USE_MAYAPY
+    * Provide shim capability for 2022 and beyond
+        * Force mayapy2 in Maya 2022 by declaring MAYA_USE_LEGACY_PYTHON
 
 # cgcmake
 CMake modules for common applications related to computer graphics.
