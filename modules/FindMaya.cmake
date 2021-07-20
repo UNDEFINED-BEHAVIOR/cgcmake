@@ -15,6 +15,8 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# Copyright 2021 Bantukul Olarn
+
 #.rst:
 # FindMaya
 # --------
@@ -38,8 +40,13 @@
 #   Defined if a Maya installation has been detected
 # ``MAYA_INCLUDE_DIR``
 #   Where to find the headers (maya/MFn.h)
+# ``MAYA_APP_DIR``
+#   Base maya program location
 # ``MAYA_LIBRARIES``
 #   All the Maya libraries.
+# ``MAYA_PYTHON_EXECUTABLE``
+#   Path to mayapy/mayapy2
+#   To be used with cmake's FindPython/2/3
 #
 
 include(CMakeParseArguments)
@@ -47,12 +54,15 @@ include(CMakeParseArguments)
 # Raise an error, halt if Maya version if not specified
 # Default value will be "NOT_SET"
 set(MAYA_VERSION "NOT_SET" CACHE STRING "Target Maya version")
-set(MAYA_USE_MAYAPY OFF CACHE BOOL "Use mayapy/mayapy2 as PYTHON_EXECUTABLE")
-set(MAYA_USE_LEGACY_PYTHON OFF CACHE BOOL "Prefer mayapy2 in Maya 2022")
+set(MAYA_MAYAPY_AS_PYTHON_INTERPRETER OFF CACHE BOOL "Use mayapy/mayapy2 as PYTHON_EXECUTABLE")
+set(MAYA_USE_LEGACY_PYTHON OFF CACHE BOOL "Prefer python2")
 
+# Must specify MAYA_VERSION
 if(MAYA_VERSION STREQUAL "NOT_SET")
     message(FATAL_ERROR "FindMaya: MAYA_VERSION is not specified")
 endif()
+
+# Maya version check
 
 # OS Specific environment setup
 set(MAYA_COMPILE_DEFINITIONS "REQUIRE_IOSTREAM;_BOOL")
@@ -84,6 +94,31 @@ set(MAYA_INSTALL_BASE_PATH ${MAYA_INSTALL_BASE_DEFAULT} CACHE STRING
     "Root path containing your maya installations, e.g. /usr/autodesk or /Applications/Autodesk/")
 
 set(MAYA_LOCATION ${MAYA_INSTALL_BASE_PATH}/maya${MAYA_VERSION}${MAYA_INSTALL_BASE_SUFFIX})
+
+set(MAYA_APP_DIR ${MAYA_LOCATION} CACHE STRING
+    "Root path of Maya application")
+
+# Detect and setup MayaPython
+# Note: windows only for now
+if(MAYA_VERSION LESS 2022)
+    set(MAYA_PYTHON_EXECUTABLE "${MAYA_LOCATION}/bin/mayapy.exe")
+else()
+    if(MAYA_USE_LEGACY_PYTHON)
+        set(MAYA_PYTHON_EXECUTABLE "${MAYA_LOCATION}/bin/mayapy2.exe")
+    else()
+        # Mayapy3k is simply mayapy.exe
+        set(MAYA_PYTHON_EXECUTABLE "${MAYA_LOCATION}/bin/mayapy.exe")
+    endif()
+endif()
+set(MAYA_PYTHON_EXECUTABLE ${MAYA_PYTHON_EXECUTABLE} CACHE STRING "")
+
+if(MAYA_MAYAPY_AS_PYTHON_INTERPRETER)
+    if(NOT WIN32)
+        message(FATAL_ERROR "MAYA_MAYAPY_AS_PYTHON_INTERPRETER")
+    # else()
+    endif()
+        set(PYTHON_EXECUTABLE ${MAYA_PYTHON_EXECUTABLE} CACHE STRING "")
+endif()
 
 # Maya include directory
 find_path(MAYA_INCLUDE_DIR maya/MFn.h
