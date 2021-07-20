@@ -1,12 +1,15 @@
 New features:
 
+* Added cmake variable
+    * MAYA_APP_DIR Maya application base directory (for that particular version)
+    * MAYA_PYTHON_EXECUTABLE MayaPy executable
 * ADD_MAYA_PLUGIN function
     * Declare, format and link target as Maya plugin in one command
     * Drop-in replacement for add_library command
 * MAYA_VERSION no longer defaults to any specific version
     * Unspecified Maya version will be marked as "NOT_SET", and treated as error
 * Specifying Maya python intepreter as target python interpreter (Windows only)
-    * Setting mayapy as PYTHON_EXECUTABLE by delcaring MAYA_USE_MAYAPY
+    * Setting mayapy as PYTHON_EXECUTABLE by delcaring MAYA_MAYAPY_AS_PYTHON_INTERPRETER
     * Provide shim capability for 2022 and beyond
         * Force mayapy2 in Maya 2022 by declaring MAYA_USE_LEGACY_PYTHON
 
