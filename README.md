@@ -13,6 +13,13 @@ New features:
     * Provide shim capability for 2022 and beyond
         * Force mayapy2 in Maya 2022 by declaring MAYA_USE_LEGACY_PYTHON
 
+# Note
+Using Maya Python as main interpreter:
+Load maya module first to setup python executable and library or
+alternatively, use MAYA_PYTHON_EXECUTABLE
+variable to specify python interpreter before calling subsequent
+python dependent projects.
+
 # cgcmake
 CMake modules for common applications related to computer graphics.
 
